@@ -27,6 +27,12 @@ Copy `.env.example` to `.env` for local experiments. In Render, add the same val
 - `DELIVERY_COUNTRY`
 - `MAX_RESULTS`
 
+## Deployment
+
+Recommended no-card path: [Deploy On PythonAnywhere Free](PYTHONANYWHERE.md).
+
+Render is also supported if your account accepts a payment method.
+
 ## Render Deployment
 
 1. Push this folder to GitHub.
