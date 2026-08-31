@@ -9,7 +9,7 @@ from fastapi import FastAPI, HTTPException, Request
 from app.bot import create_router
 from app.config import Settings, get_settings
 from app.ebay import EbayClient
-from app.openai_vision import OpenAIVisionService
+from app.groq_vision import GroqVisionService
 
 
 def create_app(settings: Settings | None = None, register_webhook: bool = True) -> FastAPI:
@@ -17,7 +17,7 @@ def create_app(settings: Settings | None = None, register_webhook: bool = True) 
     session = AiohttpSession(proxy=settings.telegram_proxy_url) if settings.telegram_proxy_url else None
     bot = Bot(token=settings.telegram_bot_token, session=session)
     dispatcher = Dispatcher(storage=MemoryStorage())
-    vision_service = OpenAIVisionService(settings.openai_api_key, proxy_url=settings.outbound_proxy_url)
+    vision_service = GroqVisionService(settings.groq_api_key, proxy_url=settings.outbound_proxy_url)
     ebay_client = EbayClient(
         client_id=settings.ebay_client_id,
         client_secret=settings.ebay_client_secret,

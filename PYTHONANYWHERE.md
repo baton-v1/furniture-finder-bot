@@ -5,7 +5,7 @@ This guide deploys the bot as a FastAPI ASGI app on PythonAnywhere.
 PythonAnywhere free accounts use an outbound internet allowlist. As of August 28, 2026, the required domains are listed on the free allowlist:
 
 - `api.telegram.org`
-- `api.openai.com`
+- `api.groq.com`
 - `api.ebay.com`
 
 If a provider changes domains later, request an allowlist addition from PythonAnywhere.
@@ -80,7 +80,7 @@ TELEGRAM_WEBHOOK_SECRET=make-a-long-random-secret
 TELEGRAM_PROXY_URL=
 OUTBOUND_PROXY_URL=
 PUBLIC_BASE_URL=https://YOUR_PYTHONANYWHERE_USERNAME.pythonanywhere.com
-OPENAI_API_KEY=your-openai-key
+GROQ_API_KEY=your-groq-key
 EBAY_CLIENT_ID=your-ebay-client-id
 EBAY_CLIENT_SECRET=your-ebay-client-secret
 EBAY_MARKETPLACE_ID=EBAY_US
@@ -132,7 +132,7 @@ Expected response:
 
 The app registers the Telegram webhook automatically when it starts.
 
-On free PythonAnywhere accounts, external API requests must go through PythonAnywhere's proxy. If the app cannot reach Telegram, OpenAI, or eBay, set both proxy variables in `.env`:
+On free PythonAnywhere accounts, external API requests must go through PythonAnywhere's proxy. If the app cannot reach Telegram, Groq, or eBay, set both proxy variables in `.env`:
 
 ```env
 TELEGRAM_PROXY_URL=http://proxy.server:3128
@@ -175,7 +175,7 @@ Check logs in PythonAnywhere:
 /var/log/YOUR_PYTHONANYWHERE_USERNAME.pythonanywhere.com.access.log
 ```
 
-If Telegram works but OpenAI or eBay fails, check the error log. If the error mentions outbound access or `403`, verify the target API domain is still on the PythonAnywhere allowlist.
+If Telegram works but Groq or eBay fails, check the error log. If the error mentions outbound access or `403`, verify the target API domain is on the PythonAnywhere allowlist.
 
 ## Security
 

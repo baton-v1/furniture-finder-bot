@@ -8,7 +8,7 @@ def test_settings_apply_defaults():
         telegram_bot_token="telegram-token",
         telegram_webhook_secret="secret-path",
         public_base_url="https://example.onrender.com",
-        openai_api_key="openai-key",
+        groq_api_key="groq-key",
         ebay_client_id="ebay-client-id",
         ebay_client_secret="ebay-client-secret",
     )
@@ -37,7 +37,7 @@ def test_telegram_proxy_url_uses_pythonanywhere_proxy_env(monkeypatch):
         telegram_bot_token="telegram-token",
         telegram_webhook_secret="secret-path",
         public_base_url="https://example.onrender.com",
-        openai_api_key="openai-key",
+        groq_api_key="groq-key",
         ebay_client_id="ebay-client-id",
         ebay_client_secret="ebay-client-secret",
     )
@@ -54,7 +54,7 @@ def test_outbound_proxy_url_prefers_explicit_outbound_proxy(monkeypatch):
         telegram_proxy_url_override="http://telegram-proxy:3128",
         outbound_proxy_url_override="http://outbound-proxy:3128",
         public_base_url="https://example.onrender.com",
-        openai_api_key="openai-key",
+        groq_api_key="groq-key",
         ebay_client_id="ebay-client-id",
         ebay_client_secret="ebay-client-secret",
     )

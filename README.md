@@ -1,6 +1,6 @@
 # Furniture Finder Telegram Bot
 
-Telegram bot that accepts a furniture or interior photo, asks for delivery city and budget, analyzes the item with OpenAI, and returns similar eBay listings.
+Telegram bot that accepts a furniture or interior photo, asks for delivery city and budget, analyzes the item with Groq vision models, and returns similar eBay listings.
 
 ## Local Checks
 
@@ -20,7 +20,7 @@ Copy `.env.example` to `.env` for local experiments. In Render, add the same val
 - `TELEGRAM_BOT_TOKEN`
 - `TELEGRAM_WEBHOOK_SECRET`
 - `PUBLIC_BASE_URL`
-- `OPENAI_API_KEY`
+- `GROQ_API_KEY`
 - `EBAY_CLIENT_ID`
 - `EBAY_CLIENT_SECRET`
 - `EBAY_MARKETPLACE_ID`
@@ -50,7 +50,7 @@ Render is also supported if your account accepts a payment method.
 2. Bot asks for a furniture or interior photo.
 3. Bot asks for delivery city.
 4. Bot asks for budget in USD.
-5. Bot analyzes the image with OpenAI and builds an English eBay search query.
+5. Bot analyzes the image with Groq and builds an English eBay search query.
 6. Bot searches eBay Browse API with budget and country-level delivery filters.
 7. Bot returns up to `MAX_RESULTS` matching listings.
 

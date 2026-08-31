@@ -23,7 +23,7 @@ class Settings(BaseSettings):
     telegram_proxy_url_override: str | None = Field(default=None, alias="TELEGRAM_PROXY_URL")
     outbound_proxy_url_override: str | None = Field(default=None, alias="OUTBOUND_PROXY_URL")
     public_base_url: str = Field(alias="PUBLIC_BASE_URL")
-    openai_api_key: str = Field(alias="OPENAI_API_KEY")
+    groq_api_key: str = Field(alias="GROQ_API_KEY")
     ebay_client_id: str = Field(alias="EBAY_CLIENT_ID")
     ebay_client_secret: str = Field(alias="EBAY_CLIENT_SECRET")
     ebay_marketplace_id: str = Field(default="EBAY_US", alias="EBAY_MARKETPLACE_ID")

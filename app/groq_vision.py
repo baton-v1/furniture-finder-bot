@@ -7,6 +7,8 @@ from openai import AsyncOpenAI
 from app.models import FurnitureDescription
 
 
+GROQ_BASE_URL = "https://api.groq.com/openai/v1"
+DEFAULT_MODEL = "qwen/qwen3.6-27b"
 SYSTEM_PROMPT = (
     "You identify furniture and interior decor from photos. "
     "Return only compact JSON with keys: item_type, style, colors, materials, details, search_query. "
@@ -26,14 +28,29 @@ def parse_furniture_description(raw_json: str) -> FurnitureDescription:
             search_query=str(data["search_query"]),
         )
     except (json.JSONDecodeError, KeyError, TypeError) as exc:
-        raise ValueError("OpenAI image analysis returned invalid furniture JSON") from exc
+        raise ValueError("Groq image analysis returned invalid furniture JSON") from exc
 
 
-class OpenAIVisionService:
-    def __init__(self, api_key: str, model: str = "gpt-4.1-mini", proxy_url: str | None = None):
+class GroqVisionService:
+    def __init__(
+        self,
+        api_key: str,
+        model: str = DEFAULT_MODEL,
+        proxy_url: str | None = None,
+        base_url: str = GROQ_BASE_URL,
+    ):
         http_client = httpx.AsyncClient(proxy=proxy_url) if proxy_url else None
-        self._client = AsyncOpenAI(api_key=api_key, http_client=http_client)
+        self._client = AsyncOpenAI(api_key=api_key, base_url=base_url, http_client=http_client)
         self._model = model
+        self._base_url = base_url
+
+    @property
+    def model(self) -> str:
+        return self._model
+
+    @property
+    def base_url(self) -> str:
+        return self._base_url
 
     async def analyze(self, image_bytes: bytes, mime_type: str = "image/jpeg") -> FurnitureDescription:
         encoded = base64.b64encode(image_bytes).decode("ascii")
@@ -44,7 +61,11 @@ class OpenAIVisionService:
                     "role": "user",
                     "content": [
                         {"type": "input_text", "text": SYSTEM_PROMPT},
-                        {"type": "input_image", "image_url": f"data:{mime_type};base64,{encoded}"},
+                        {
+                            "type": "input_image",
+                            "detail": "auto",
+                            "image_url": f"data:{mime_type};base64,{encoded}",
+                        },
                     ],
                 }
             ],

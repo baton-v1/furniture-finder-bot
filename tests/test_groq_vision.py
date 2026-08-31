@@ -1,6 +1,6 @@
 import pytest
 
-from app.openai_vision import parse_furniture_description
+from app.groq_vision import GroqVisionService, parse_furniture_description
 
 
 def test_parse_furniture_description_returns_structured_model():
@@ -23,5 +23,12 @@ def test_parse_furniture_description_returns_structured_model():
 
 
 def test_parse_furniture_description_rejects_invalid_json():
-    with pytest.raises(ValueError, match="OpenAI"):
+    with pytest.raises(ValueError, match="Groq"):
         parse_furniture_description("not-json")
+
+
+def test_groq_service_uses_groq_defaults():
+    service = GroqVisionService(api_key="groq-key")
+
+    assert service.model == "qwen/qwen3.6-27b"
+    assert service.base_url == "https://api.groq.com/openai/v1"
