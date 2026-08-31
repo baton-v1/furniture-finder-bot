@@ -1,6 +1,7 @@
 import base64
 import json
 
+import httpx
 from openai import AsyncOpenAI
 
 from app.models import FurnitureDescription
@@ -29,8 +30,9 @@ def parse_furniture_description(raw_json: str) -> FurnitureDescription:
 
 
 class OpenAIVisionService:
-    def __init__(self, api_key: str, model: str = "gpt-4.1-mini"):
-        self._client = AsyncOpenAI(api_key=api_key)
+    def __init__(self, api_key: str, model: str = "gpt-4.1-mini", proxy_url: str | None = None):
+        http_client = httpx.AsyncClient(proxy=proxy_url) if proxy_url else None
+        self._client = AsyncOpenAI(api_key=api_key, http_client=http_client)
         self._model = model
 
     async def analyze(self, image_bytes: bytes, mime_type: str = "image/jpeg") -> FurnitureDescription:

@@ -53,14 +53,23 @@ class EbayClient:
         marketplace_id: str,
         delivery_country: str,
         max_results: int,
+        proxy_url: str | None = None,
     ):
         self._client_id = client_id
         self._client_secret = client_secret
         self._marketplace_id = marketplace_id
         self._delivery_country = delivery_country
         self._max_results = max_results
+        self._proxy_url = proxy_url
         self._access_token: str | None = None
         self._token_expires_at = 0.0
+
+    @property
+    def proxy_url(self) -> str | None:
+        return self._proxy_url
+
+    def _http_client(self) -> httpx.AsyncClient:
+        return httpx.AsyncClient(timeout=20, proxy=self._proxy_url)
 
     async def _get_access_token(self) -> str:
         if self._access_token and time.time() < self._token_expires_at - 60:
@@ -68,7 +77,7 @@ class EbayClient:
 
         credentials = f"{self._client_id}:{self._client_secret}".encode("utf-8")
         basic = base64.b64encode(credentials).decode("ascii")
-        async with httpx.AsyncClient(timeout=20) as client:
+        async with self._http_client() as client:
             response = await client.post(
                 TOKEN_URL,
                 headers={
@@ -89,7 +98,7 @@ class EbayClient:
 
     async def search(self, query: str, max_price: int) -> list[EbayListing]:
         token = await self._get_access_token()
-        async with httpx.AsyncClient(timeout=20) as client:
+        async with self._http_client() as client:
             response = await client.get(
                 BROWSE_SEARCH_URL,
                 params=build_search_params(query, max_price, self._delivery_country, self._max_results),

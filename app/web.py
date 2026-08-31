@@ -17,13 +17,14 @@ def create_app(settings: Settings | None = None, register_webhook: bool = True) 
     session = AiohttpSession(proxy=settings.telegram_proxy_url) if settings.telegram_proxy_url else None
     bot = Bot(token=settings.telegram_bot_token, session=session)
     dispatcher = Dispatcher(storage=MemoryStorage())
-    vision_service = OpenAIVisionService(settings.openai_api_key)
+    vision_service = OpenAIVisionService(settings.openai_api_key, proxy_url=settings.outbound_proxy_url)
     ebay_client = EbayClient(
         client_id=settings.ebay_client_id,
         client_secret=settings.ebay_client_secret,
         marketplace_id=settings.ebay_marketplace_id,
         delivery_country=settings.delivery_country,
         max_results=settings.max_results,
+        proxy_url=settings.outbound_proxy_url,
     )
     dispatcher.include_router(create_router(vision_service, ebay_client))
 

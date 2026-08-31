@@ -1,3 +1,5 @@
+import logging
+
 from aiogram import Bot, F, Router
 from aiogram.filters import CommandStart
 from aiogram.fsm.context import FSMContext
@@ -6,6 +8,9 @@ from aiogram.types import Message
 
 from app.budget import parse_budget
 from app.formatting import format_description, format_listing
+
+
+logger = logging.getLogger(__name__)
 
 
 class FurnitureSearchStates(StatesGroup):
@@ -24,6 +29,10 @@ async def run_search(image_bytes: bytes, budget: int, vision_service, ebay_clien
     description = await vision_service.analyze(image_bytes)
     listings = await ebay_client.search(description.search_query, budget)
     return description, listings
+
+
+def log_search_error(exc: Exception) -> None:
+    logger.exception("Furniture search failed", exc_info=exc)
 
 
 def create_router(vision_service, ebay_client) -> Router:
@@ -69,7 +78,8 @@ def create_router(vision_service, ebay_client) -> Router:
         try:
             image_bytes = await download_photo_bytes(bot, data["photo_file_id"])
             description, listings = await run_search(image_bytes, budget, vision_service, ebay_client)
-        except Exception:
+        except Exception as exc:
+            log_search_error(exc)
             await message.answer("Sorry, I could not complete the search right now. Please try again later.")
             return
 

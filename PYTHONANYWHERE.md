@@ -78,6 +78,7 @@ Fill in real values:
 TELEGRAM_BOT_TOKEN=your-telegram-token
 TELEGRAM_WEBHOOK_SECRET=make-a-long-random-secret
 TELEGRAM_PROXY_URL=
+OUTBOUND_PROXY_URL=
 PUBLIC_BASE_URL=https://YOUR_PYTHONANYWHERE_USERNAME.pythonanywhere.com
 OPENAI_API_KEY=your-openai-key
 EBAY_CLIENT_ID=your-ebay-client-id
@@ -131,7 +132,12 @@ Expected response:
 
 The app registers the Telegram webhook automatically when it starts.
 
-On free PythonAnywhere accounts, Telegram requests must go through PythonAnywhere's proxy. The app automatically reads the `http_proxy` or `https_proxy` environment variable that PythonAnywhere provides. Leave `TELEGRAM_PROXY_URL` blank unless support tells you to set a specific proxy URL.
+On free PythonAnywhere accounts, external API requests must go through PythonAnywhere's proxy. If the app cannot reach Telegram, OpenAI, or eBay, set both proxy variables in `.env`:
+
+```env
+TELEGRAM_PROXY_URL=http://proxy.server:3128
+OUTBOUND_PROXY_URL=http://proxy.server:3128
+```
 
 ## 8. Test In Telegram
 

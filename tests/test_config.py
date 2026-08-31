@@ -28,6 +28,7 @@ def test_settings_env_file_points_to_project_root():
 
 
 def test_telegram_proxy_url_uses_pythonanywhere_proxy_env(monkeypatch):
+    monkeypatch.delenv("OUTBOUND_PROXY_URL", raising=False)
     monkeypatch.delenv("TELEGRAM_PROXY_URL", raising=False)
     monkeypatch.delenv("https_proxy", raising=False)
     monkeypatch.delenv("HTTPS_PROXY", raising=False)
@@ -42,3 +43,21 @@ def test_telegram_proxy_url_uses_pythonanywhere_proxy_env(monkeypatch):
     )
 
     assert settings.telegram_proxy_url == "http://proxy.server:3128"
+    assert settings.outbound_proxy_url == "http://proxy.server:3128"
+
+
+def test_outbound_proxy_url_prefers_explicit_outbound_proxy(monkeypatch):
+    monkeypatch.setenv("http_proxy", "http://proxy.server:3128")
+    settings = Settings(
+        telegram_bot_token="telegram-token",
+        telegram_webhook_secret="secret-path",
+        telegram_proxy_url_override="http://telegram-proxy:3128",
+        outbound_proxy_url_override="http://outbound-proxy:3128",
+        public_base_url="https://example.onrender.com",
+        openai_api_key="openai-key",
+        ebay_client_id="ebay-client-id",
+        ebay_client_secret="ebay-client-secret",
+    )
+
+    assert settings.telegram_proxy_url == "http://telegram-proxy:3128"
+    assert settings.outbound_proxy_url == "http://outbound-proxy:3128"

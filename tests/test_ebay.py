@@ -1,4 +1,4 @@
-from app.ebay import build_search_params, normalize_ebay_items
+from app.ebay import EbayClient, build_search_params, normalize_ebay_items
 
 
 def test_build_search_params_includes_budget_and_delivery_country():
@@ -35,3 +35,16 @@ def test_normalize_ebay_items_extracts_safe_listing_fields():
     assert listings[0].title == "Green Velvet Accent Chair"
     assert listings[0].price == "349.99 USD"
     assert listings[0].shipping == "25.00 USD shipping"
+
+
+def test_ebay_client_stores_proxy_url():
+    client = EbayClient(
+        client_id="client-id",
+        client_secret="client-secret",
+        marketplace_id="EBAY_US",
+        delivery_country="US",
+        max_results=5,
+        proxy_url="http://proxy.server:3128",
+    )
+
+    assert client.proxy_url == "http://proxy.server:3128"
