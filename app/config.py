@@ -1,4 +1,5 @@
 from functools import lru_cache
+import os
 from pathlib import Path
 
 from pydantic import Field
@@ -19,6 +20,7 @@ class Settings(BaseSettings):
 
     telegram_bot_token: str = Field(alias="TELEGRAM_BOT_TOKEN")
     telegram_webhook_secret: str = Field(alias="TELEGRAM_WEBHOOK_SECRET")
+    telegram_proxy_url_override: str | None = Field(default=None, alias="TELEGRAM_PROXY_URL")
     public_base_url: str = Field(alias="PUBLIC_BASE_URL")
     openai_api_key: str = Field(alias="OPENAI_API_KEY")
     ebay_client_id: str = Field(alias="EBAY_CLIENT_ID")
@@ -30,6 +32,16 @@ class Settings(BaseSettings):
     @property
     def webhook_url(self) -> str:
         return f"{self.public_base_url.rstrip('/')}/webhook/{self.telegram_webhook_secret}"
+
+    @property
+    def telegram_proxy_url(self) -> str | None:
+        return (
+            self.telegram_proxy_url_override
+            or os.environ.get("https_proxy")
+            or os.environ.get("HTTPS_PROXY")
+            or os.environ.get("http_proxy")
+            or os.environ.get("HTTP_PROXY")
+        )
 
 
 @lru_cache

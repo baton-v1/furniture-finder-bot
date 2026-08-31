@@ -1,6 +1,7 @@
 from contextlib import asynccontextmanager
 
 from aiogram import Bot, Dispatcher
+from aiogram.client.session.aiohttp import AiohttpSession
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.types import Update
 from fastapi import FastAPI, HTTPException, Request
@@ -13,7 +14,8 @@ from app.openai_vision import OpenAIVisionService
 
 def create_app(settings: Settings | None = None, register_webhook: bool = True) -> FastAPI:
     settings = settings or get_settings()
-    bot = Bot(token=settings.telegram_bot_token)
+    session = AiohttpSession(proxy=settings.telegram_proxy_url) if settings.telegram_proxy_url else None
+    bot = Bot(token=settings.telegram_bot_token, session=session)
     dispatcher = Dispatcher(storage=MemoryStorage())
     vision_service = OpenAIVisionService(settings.openai_api_key)
     ebay_client = EbayClient(

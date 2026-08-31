@@ -25,3 +25,20 @@ def test_settings_env_file_points_to_project_root():
     assert env_file.name == ".env"
     assert env_file.parent.name == "furniture-finder-bot"
     assert env_file.is_absolute()
+
+
+def test_telegram_proxy_url_uses_pythonanywhere_proxy_env(monkeypatch):
+    monkeypatch.delenv("TELEGRAM_PROXY_URL", raising=False)
+    monkeypatch.delenv("https_proxy", raising=False)
+    monkeypatch.delenv("HTTPS_PROXY", raising=False)
+    monkeypatch.setenv("http_proxy", "http://proxy.server:3128")
+    settings = Settings(
+        telegram_bot_token="telegram-token",
+        telegram_webhook_secret="secret-path",
+        public_base_url="https://example.onrender.com",
+        openai_api_key="openai-key",
+        ebay_client_id="ebay-client-id",
+        ebay_client_secret="ebay-client-secret",
+    )
+
+    assert settings.telegram_proxy_url == "http://proxy.server:3128"
