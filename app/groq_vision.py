@@ -85,7 +85,6 @@ class GroqVisionService:
                     ],
                 }
             ],
-            response_format={"type": "json_object"},
             temperature=1e-8,
             max_completion_tokens=1024,
         )
