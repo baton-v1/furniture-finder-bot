@@ -27,6 +27,28 @@ def test_parse_furniture_description_rejects_invalid_json():
         parse_furniture_description("not-json")
 
 
+def test_parse_furniture_description_accepts_markdown_json_block():
+    raw = """
+    Here is the JSON:
+
+    ```json
+    {
+      "item_type": "coffee table",
+      "style": "industrial",
+      "colors": ["black", "oak"],
+      "materials": ["metal", "wood"],
+      "details": ["round top"],
+      "search_query": "industrial round oak coffee table black metal"
+    }
+    ```
+    """
+
+    description = parse_furniture_description(raw)
+
+    assert description.item_type == "coffee table"
+    assert description.search_query == "industrial round oak coffee table black metal"
+
+
 def test_groq_service_uses_groq_defaults():
     service = GroqVisionService(api_key="groq-key")
 
